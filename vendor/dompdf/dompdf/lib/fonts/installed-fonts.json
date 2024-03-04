@@ -1,0 +1,8 @@
+{
+    "poppins": {
+        "normal": "C:\\xampp\\htdocs\\jilchad\\wp-content\\themes\\Divi-child\\vendor\\dompdf\\dompdf\/lib\/fonts\/Poppins-Medium-500",
+        "bold": "C:\\xampp\\htdocs\\jilchad\\wp-content\\themes\\Divi-child\\vendor\\dompdf\\dompdf\/lib\/fonts\/Poppins-Medium-500",
+        "italic": "C:\\xampp\\htdocs\\jilchad\\wp-content\\themes\\Divi-child\\vendor\\dompdf\\dompdf\/lib\/fonts\/Poppins-Medium-500",
+        "bold_italic": "C:\\xampp\\htdocs\\jilchad\\wp-content\\themes\\Divi-child\\vendor\\dompdf\\dompdf\/lib\/fonts\/Poppins-Medium-500"
+    }
+}
