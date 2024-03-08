@@ -3,13 +3,20 @@
  * Setting up the configurator files for configurator-template.php
  */
 function enqueue_configurator_script() {
+    if (is_page('configurator')) {
     wp_enqueue_script('configurator-jquery', get_stylesheet_directory_uri() . '/js/configurator.js');
     wp_localize_script('configurator-jquery', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ));
     // wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.12.1/jquery-ui.js', array('jquery'), '1.12.1', true);
     wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.12.1/jquery-ui.js');
+    }
 }
 add_action('wp_enqueue_scripts', 'enqueue_configurator_script');
-
+function enqueue_configurator_css() {
+    if (is_page('configurator')) {
+        wp_enqueue_style('configurator-css', get_stylesheet_directory_uri() . '/css/configurator.css');
+    }
+}
+add_action('wp_enqueue_scripts', 'enqueue_configurator_css');
 
 
 //handle ajax requests from configurator.js
@@ -156,22 +163,57 @@ function get_rear_module_image_callback() {
     $rear_module_id = isset($_POST['rear_module_id']) ? intval($_POST['rear_module_id']) : 0;
 
     $rear_module_image = get_field('rear_module_configurator_image',$rear_module_id);
+    $power_watt=get_field('power_output',$rear_module_id);
     $four_slot_image = get_field('4_slot_image', $rear_module_id);
+        
+        // Query for Feature Options Post Object
+        $args = array(
+            'post_type'      => 'products',
+            'posts_per_page' => -1, // Retrieve all posts
+            'meta_query'     => array(
+                array(
+                    'key'     => 'select_rear_modules', // Your ACF field key for selecting rear modules
+                    'value'   => $rear_module_id, // ID of the specific rear-module post
+                    'compare' => 'LIKE', // Check if the value is in the array of selected rear modules
+                ),
+            ),
+        );
 
-    // Prepare the data to be sent in the success response
-    $response_data = array(
-        'image' => $rear_module_image, // Include the image data if needed
-        'four_slot_image' => $four_slot_image // Include the value of the ACF field
-    );
+        $query = new WP_Query($args);
 
-    if($rear_module_image){
-        //wp_send_json_success($rear_module_image);
-        wp_send_json_success($response_data);
-    }else{
-        wp_send_json_error('No images');
-    }
-    
-}
+        // Array to store selected options for each product
+        $selected_option_titles = array();
+
+        if ($query->have_posts()) {
+            while ($query->have_posts()) {
+                $query->the_post();
+                // Get the selected options from the 'options_post_object' field
+                $options = get_field('options_post_object');
+                if ($options) {
+                    // Iterate over the selected options and extract their titles
+                    foreach ($options as $option) {
+                        $selected_option_titles[] = $option->post_title;
+                    }
+                }
+            }
+            wp_reset_postdata();
+        }
+
+        // Prepare the data to be sent in the success response
+        $response_data = array(
+            'image'           => $rear_module_image, // Include the image data if needed
+            'four_slot_image' => $four_slot_image, // Include the value of the ACF field
+            'power_watt'      => $power_watt,
+            'selected_options'=> $selected_option_titles  // Include selected options for products associated with the rear module
+        );
+            if($rear_module_image){
+                //wp_send_json_success($rear_module_image);
+                wp_send_json_success($response_data);
+            }else{
+                wp_send_json_error('No images');
+            }
+            
+        }
 /**
  * 
  * Generating PDF
