@@ -489,7 +489,6 @@ function getFormData() {
 
     return formData;
 }
-
 /**
  * 
  * Generate PDF
@@ -540,7 +539,7 @@ var pdfData = getFormData();
  * 
  */
 $('#request-for-quotation-button').click(function() {
-    // Check if some Rear Module Selected otherwise return
+    // Check if some Rear Module Selected otherwise
     if ($('.slot').find('img').length === 0) {
         // Alert the user
         alert('Select atleast one Rear Module');
