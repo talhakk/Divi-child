@@ -72,12 +72,12 @@ function generateCardMarkup($cardName, $power) {
           <h1><?php echo $pdf_data['title']; ?></h1>
           <div class="header-list">
             <ul>
-              <li><strong>Frame:</strong><?php echo $pdf_data['selectedframe']; ?></li>     
-              <li><strong>Power Supply:</strong><?php echo $pdf_data['redundantsupply']; ?></li>
-              <li><strong>Support Brackets:</strong><?php echo $pdf_data['framesupportkit']; ?></li>
-              <li><strong>Network Card:</strong><?php echo $pdf_data['networkcard']; ?></li>
+              <li><strong>Frame:</strong><?php echo $pdf_data['selectedFrame']; ?></li>     
+              <li><strong>Power Supply:</strong><?php echo $pdf_data['redundantPowerSupply']; ?></li>
+              <li><strong>Support Brackets:</strong><?php echo $pdf_data['frameSupportBracketKit']; ?></li>
+              <li><strong>Network Card:</strong><?php echo $pdf_data['networkCard']; ?></li>
               <li><strong>SNMP Support:</strong><?php echo $pdf_data['snmpSupportCheck']; ?></li>
-              <li><strong>IP Address:</strong><?php echo $pdf_data['snmpsupport']; ?></li>
+              <li><strong>IP Address:</strong><?php echo $pdf_data['snmpSupport']; ?></li>
             </ul>
           </div>
         </div>
@@ -87,9 +87,16 @@ function generateCardMarkup($cardName, $power) {
     <!-- image start here-->
     <div class="module-section">
                     <div class="module-wrapper" id="rear-module-images">
-                        <div class="module-structure static">
-                        <?php echo generateImageMarkup(get_stylesheet_directory_uri().'/assets/watt1.png'); ?>
+                        <div class="module-structure static ">
+                        <?php 
+                        $redundantPowerSupply= $pdf_data['redundantsupply'];
+                        if ($redundantPowerSupply === 'yes'){
+                          echo generateImageMarkup(get_stylesheet_directory_uri().'/assets/watt1.png');
+                        }
+                         ?>
+                         <span class="small-images">
                         <?php echo generateImageMarkup(get_stylesheet_directory_uri().'/assets/watt.png'); ?>
+                        </span>
                         </div>
                         <div class="slot module-structure" data-slot="1"><?php echo generateImageMarkup($pdf_data['imageSrc_0'], $pdf_data['imageClasses_0']); ?></div>
                         <div class="slot module-structure" data-slot="2"><?php echo generateImageMarkup($pdf_data['imageSrc_1'], $pdf_data['imageClasses_1']); ?></div>

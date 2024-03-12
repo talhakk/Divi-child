@@ -100,9 +100,7 @@ $(".slot").droppable({
                     // Check if the previous slot does not have the class 'expanded'
                     if (!$(this).prev().find('img').hasClass('expanded')) {
                         // Enable droppable functionality for the current slot
-                        $(this).droppable('enable');
-                        
-                        console.log('droppable enabled');
+                        $(this).droppable('enable');      
                     }
                 } else {
                     // Disable droppable functionality for the current slot
@@ -176,7 +174,6 @@ $(".slot").droppable({
                 $nextSlot.droppable('enable');
                 // Remove the data-expanded attribute
                 $nextSlot.removeAttr('data-expanded');
-                console.log('Next slot droppable enabled');
             }
             $(ui.draggable).closest('.slot').removeClass('draggingE');
             // Append the dragged element to the current slot
@@ -334,7 +331,6 @@ $(".slot").droppable({
  * Feature Options Checkboxes
  */
     $(document).on('click', '#rear-modules-list li', function() {
-        console.log('rearmodulechanged');
         var rear_module_id = $(this).data('rear-module-id'); // Get selected rear module ID
         var rearModule = $(this).text();
         var card = $(this).data('card-name');
@@ -360,8 +356,6 @@ $(".slot").droppable({
                     var fourSlotImage = response.data.four_slot_image;
                     var selectedOptions= response.data.selected_options;
                     
-                    console.log('SelectedOptions:', selectedOptions);
-                    
                     var imageClass = 'module-img';
                     if (fourSlotImage.length > 0) { // Check if the checkbox is checked
                         imageClass += ' expanded';
@@ -378,12 +372,7 @@ $(".slot").droppable({
                     'data-power':power ,
                     'data-selected-options':selectedOptions
                 });
-                /*
-                var $removeButton = $('<a class="closeme">X</a>').click(function() {
-                    $container.remove(); // Remove the image on button click
-                    $(this).remove(); // Remove the button itself
-                });
-                */
+               
                 var $removeButton =$('<a class="close">X</a>');
                 var $overlay = $('<div class="overlay"></div>').append($removeButton);
                 var $title = $('<div class="rm-title"></div>').append(rearModule);
@@ -393,7 +382,6 @@ $(".slot").droppable({
                $('#rear-module-image-heading').text(rearModule);
                // make the image draggable
                 makeDraggable($container);
-                //$('#rear-module-options').find('input[type="checkbox"]').prop('checked', false);
                 /**
                  * generate feature option checkboxes
                  */
@@ -433,45 +421,32 @@ $(".slot").droppable({
                 }
             });
         }
-});//end of rear module images
-// Get checkbox values 
-
+});//end of rear module images 
 /**
  * 
- * Generate PDF
+ * Collect Data for PDF & Quotation
  * 
  */
-$('#generate-pdf-button').click(function() {
-   // Basic options data 
-   var title = $('#frame_title_main').val();
-   var selectedFrame = $('#frame-selection-radio input[name="select_frame_power"]:checked').val();
-   var redundantPowerSupply = $('#redundant-power-supply-options input[name="option"]:checked').val();
-   var networkCard = $('#network-card-options input[name="second_option"]:checked').val();
-   var snmpSupport = '';
-   var snmpSupportCheck= '';
-    if ($('#network-card-checkbox-container').is(':visible')) {
-        snmpSupport = $('#snmp-support-ip').val();
-        snmpSupportCheck = $('#network-card-options #additional-info-checkbox').prop('checked');
-    }
-   var frameSupportBracketKit = $('#frame-support-bracket-kit-options input[name="option"]:checked').val();
+function getFormData() {
+    var formData = {};
 
-    var card = $('#cards-list option:selected').text();
-    var rearModules = $('#rear-modules-list option:selected').map(function() {
+    // Basic options data 
+    formData.title = $('#frame_title_main').val();
+    formData.selectedFrame = $('#frame-selection-radio input[name="select_frame_power"]:checked').val();
+    formData.redundantPowerSupply = $('#redundant-power-supply-options input[name="option"]:checked').val();
+    formData.networkCard = $('#network-card-options input[name="second_option"]:checked').val();
+    formData.snmpSupport = '';
+    formData.snmpSupportCheck = '';
+    if ($('#network-card-checkbox-container').is(':visible')) {
+        formData.snmpSupport = $('#snmp-support-ip').val();
+        formData.snmpSupportCheck = $('#network-card-options #additional-info-checkbox').prop('checked');
+    }
+    formData.frameSupportBracketKit = $('#frame-support-bracket-kit-options input[name="option"]:checked').val();
+
+    formData.card = $('#cards-list option:selected').text();
+    formData.rearModules = $('#rear-modules-list option:selected').map(function() {
         return $(this).text();
     }).get();
-
-    // Prepare data object for AJAX request
-    var pdfData = {
-        card: card,
-        rearModules: rearModules,
-        selectedframe: selectedFrame,
-        redundantsupply: redundantPowerSupply,
-        networkcard: networkCard,
-        snmpsupport: snmpSupport,
-        framesupportkit: frameSupportBracketKit,
-        title: title,
-        snmpSupportCheck:snmpSupportCheck
-    };
 
     // Collect images data
     var imagesData = [];
@@ -500,20 +475,34 @@ $('#generate-pdf-button').click(function() {
         imagesData.push(imageData);
     });
 
-// Add images data to pdfData
-imagesData.forEach(function(image, index) {
-    pdfData['imageSrc_' + index] = image.src;
-    pdfData['imageCardName_' + index] = image.cardName;
-    pdfData['imageRearModule_' + index] = image.rearModule;
-    pdfData['imageClasses_' + index] = image.classes;
-    pdfData['powerWatt_' + index] = image.powerWatt;
-    pdfData['expandedRearModule_' + index] = image.expandedRearModule;
-    pdfData['slotLocation_' + index] = image.slotLocations;
-    pdfData['imageOptions_' + index] = image.options;
-});
+    // Add images data to formData
+    imagesData.forEach(function(image, index) {
+        formData['imageSrc_' + index] = image.src;
+        formData['imageCardName_' + index] = image.cardName;
+        formData['imageRearModule_' + index] = image.rearModule;
+        formData['imageClasses_' + index] = image.classes;
+        formData['powerWatt_' + index] = image.powerWatt;
+        formData['expandedRearModule_' + index] = image.expandedRearModule;
+        formData['slotLocation_' + index] = image.slotLocations;
+        formData['imageOptions_' + index] = image.options;
+    });
 
+    return formData;
+}
 
-
+/**
+ * 
+ * Generate PDF
+ * 
+ */
+$('#generate-pdf-button').click(function() {
+     // Check if .slot elements exist
+     if ($('.slot').find('img').length === 0) {
+        // Alert the user
+        alert('Select atleast one Rear Module');
+        return; // Exit the function
+    }
+var pdfData = getFormData();
     // Prepare data object for AJAX request
     var data = {
         action: 'generate_pdf',
@@ -522,12 +511,11 @@ imagesData.forEach(function(image, index) {
 
     $.post(ajaxurl, data, function(response) {
         // Handle response
-        console.log('success gen pdf');
+        console.log('success generating pdf');
     
         // Check if the response indicates success
         if (response.success) {
-        var pdfUrl = response.data;
-
+        var pdfUrl = response.data.pdf_url;
         // Trigger download
         var link = document.createElement('a');
         link.href = pdfUrl;
@@ -546,15 +534,47 @@ imagesData.forEach(function(image, index) {
     
     
 });
+/**
+ * 
+ * Request For Quotation
+ * 
+ */
+$('#request-for-quotation-button').click(function() {
+    // Check if some Rear Module Selected otherwise return
+    if ($('.slot').find('img').length === 0) {
+        // Alert the user
+        alert('Select atleast one Rear Module');
+        return; // Exit the function
+    }
+    var pdfData = getFormData();
+        // Prepare data object for AJAX request
+        var data = {
+            action: 'generate_pdf',
+            pdfData: pdfData
+        };
+    
+        $.post(ajaxurl, data, function(response) {
+            // Handle response
+            console.log('Request for Quotation initiated');
+        
+            // Check if the response indicates success
+            if (response.success) {
+           // var pdfUrl = response.data;
 
-
-
-
+            // Save pdfUrl in the browser's local storage
+            //localStorage.setItem('pdfUrl', pdfUrl);
+            var pdf_filename= response.data.pdf_filename;
+             window.location.href = '/jilchad/configuration-sales/?pdf_filename=' + pdf_filename;
+            } else {
+                // Handle error response
+                console.log('Failed to Request for Quotation:', response.data);
+            }
+        }).fail(function(xhr, status, error) {
+            // Handle AJAX request failure
+            console.log('Failed to Request for Quotation:', error);
+        });
+        
+        
+    });
 
 });//main
-
-
-
-
-
-

@@ -110,7 +110,7 @@ Template Name: Configurator Template two
                     <div class="module-wrapper" id="rear-module-images">
                         <div class="module-structure static">
                             <img id="redundant-power-image" src="<?php echo get_stylesheet_directory_uri().'/assets/watt1.png';?>" alt="" class="module-image">
-                            <img src="<?php echo get_stylesheet_directory_uri().'/assets/watt.png';?>" alt="" class="module-image">
+                            <img src="<?php echo get_stylesheet_directory_uri().'/assets/watt.png';?>" alt="" class="small-images module-image">
                         </div>
                         <div class="slot module-structure" data-slot="1"></div>
                         <div class="slot module-structure" data-slot="2"></div>
@@ -226,8 +226,8 @@ Template Name: Configurator Template two
                     </div>
                 </div>
 
-                <div class="action-btns">
-                    <a href="" class="btn cta">Request Quotation</a>
+                <div class="action-btns">          
+                    <button id="request-for-quotation-button" class="btn cta">Request Quotation</button>
                     <button id="generate-pdf-button" class="btn">Save PDF</button>
                 </div>
             </div>

@@ -224,6 +224,8 @@ add_action('wp_ajax_generate_pdf', 'generate_pdf_callback');
 add_action('wp_ajax_nopriv_generate_pdf', 'generate_pdf_callback');
 
 function generate_pdf_callback() {
+    // Start session
+    start_session();
     // Get PDF data from AJAX request
     $pdf_data = isset($_POST['pdfData']) ? $_POST['pdfData'] : '';
 
@@ -234,9 +236,7 @@ function generate_pdf_callback() {
         // Load PDF template file
         ob_start();
         include_once(get_stylesheet_directory() . '/templates/pdf-template.php');
-        $html = ob_get_clean();
-
-    
+        $html = ob_get_clean();   
         // Generate PDF
         $dompdf = new Dompdf\Dompdf();
         $dompdf->loadHtml($html);
@@ -256,16 +256,30 @@ function generate_pdf_callback() {
             $pdf_server_path =  get_stylesheet_directory() . '/' . $pdf_subdirectory . $pdf_filename;
             $pdf_url = get_stylesheet_directory_uri() . '/'. $pdf_subdirectory. $pdf_filename;
 
+            // Save $pdf_url in session
+            $_SESSION['configuration_pdf_url'] = $pdf_url;
+
+            // Prepare the data to be sent in the success response
+            $pdf_response_data = array(
+                'pdf_url'           => $pdf_url, 
+                'pdf_filename' => $pdf_filename
+                
+            );
             // If PDF file doesn't exist, create it or append to it
             if (!file_put_contents($pdf_server_path, $pdf_content, FILE_APPEND)) {
                 // Handle error if failed to save or append to PDF file
                 wp_send_json_error('Failed to save or append to PDF file.');
             } else {
                 // If PDF content is successfully saved or appended, send success response
-                wp_send_json_success($pdf_url);
+                wp_send_json_success($pdf_response_data);
             }
      } else {
          // Error handling if PDF data is not provided
          wp_send_json_error('PDF data not provided.');
      } 
- }
+ }//generate_pdf ends
+ function start_session() {
+    if (!session_id()) {
+        session_start();
+    }
+}

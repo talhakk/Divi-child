@@ -255,6 +255,11 @@ input.text-input::placeholder {
     background-color: #E9EBFA;
 }
 
+.module-wrapper .module-structure.static img.small-images{
+    height: auto;
+    margin-top: auto;
+}
+
 .module-wrapper .module-structure img.expanded {
     width: 200%;
     max-width: 200%;
@@ -272,6 +277,7 @@ input.text-input::placeholder {
 
 .module-wrapper .module-structure.static img {
     position: unset;
+    height: auto;
 }
 
 .module-wrapper .module-structure:hover ,.module-wrapper .module-structure.ui-droppable-hover {
