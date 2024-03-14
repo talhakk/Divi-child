@@ -6,7 +6,6 @@ function enqueue_configurator_script() {
     if (is_page('configurator')) {
     wp_enqueue_script('configurator-jquery', get_stylesheet_directory_uri() . '/js/configurator.js');
     wp_localize_script('configurator-jquery', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ));
-    // wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.12.1/jquery-ui.js', array('jquery'), '1.12.1', true);
     wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.12.1/jquery-ui.js');
     }
 }
@@ -14,11 +13,30 @@ add_action('wp_enqueue_scripts', 'enqueue_configurator_script');
 function enqueue_configurator_css() {
     if (is_page('configurator')) {
         wp_enqueue_style('configurator-css', get_stylesheet_directory_uri() . '/css/configurator.css');
+    }else if (is_page('configuration-sales')) {
+        wp_enqueue_style('configurator-sales-css', get_stylesheet_directory_uri() . '/css/request-quotation.css');
     }
 }
 add_action('wp_enqueue_scripts', 'enqueue_configurator_css');
 
+// Add the page to the admin menu
+function configurator_menu_page() {
+    add_menu_page(
+        __( 'Configurator', 'textdomain' ), // Page title
+        __( 'Configurator', 'textdomain' ), // Menu title
+        'manage_options', // Capability required to access this menu page
+        'frame-configurator-admin', // Menu slug
+        'admin_configurator_page', // Function to display the page content
+        'dashicons-admin-tools', // Icon
+        40 // Position in the menu
+    );
+}
+add_action( 'admin_menu', 'configurator_menu_page' );
 
+// Function to include the page content from a separate file
+function admin_configurator_page() {
+    include_once( get_stylesheet_directory() . '/templates/admin-configurator-page.php' );
+}
 //handle ajax requests from configurator.js
 add_action('wp_ajax_get_subcategories', 'get_subcategories_callback');
 add_action('wp_ajax_nopriv_get_subcategories', 'get_subcategories_callback');
@@ -82,10 +100,12 @@ function get_cards_callback(){
             // Get post title and ID
             $product_id = get_the_ID();
             $product_title = get_the_title();
+            $product_secondary_name= get_field('product_secondary_name');
             // Append to response data
             $products_data[] = array(
                 'id' => $product_id,
                 'name' => $product_title,
+                'secondary_name'=>$product_secondary_name
             );
         }
         // Send success response
@@ -283,3 +303,57 @@ function generate_pdf_callback() {
         session_start();
     }
 }
+/**
+ * 
+ * Single PDF Deletion 
+ * 
+ */
+add_action('wp_ajax_delete_pdf_file', 'delete_pdf_file_callback');
+function delete_pdf_file_callback() {
+    if (isset($_POST['pdf_file']) && wp_verify_nonce($_POST['_wpnonce'], 'delete_pdf_nonce')) {
+        $pdf_file_to_delete = $_POST['pdf_file'];
+
+        if (file_exists($pdf_file_to_delete)) {
+            $directory = get_stylesheet_directory() . '/submissions/';
+
+            if (wp_delete_file_from_directory($pdf_file_to_delete, $directory)) {
+                // File deletion was successful
+                wp_send_json_success('PDF file deleted successfully.');
+            } else {
+                // File deletion failed
+                wp_send_json_error('Failed to delete PDF file.');
+            }
+        } else {
+            // File does not exist
+            wp_send_json_error('Failed to delete PDF file. Invalid file path.');
+        }
+    } else {
+        // Invalid request
+        wp_send_json_error('Invalid request.');
+    }
+}
+/**
+ * Delete All PDF Files
+ * 
+ */
+add_action('wp_ajax_delete_all_pdf_files', 'delete_all_pdf_files_callback');
+function delete_all_pdf_files_callback() {
+    if (isset($_POST['_wpnonce']) && wp_verify_nonce($_POST['_wpnonce'], 'delete_all_pdf_nonce')) {
+        $pdf_directory = get_stylesheet_directory() . '/submissions/';
+        $pdf_files = glob($pdf_directory . '*.pdf');
+
+        foreach ($pdf_files as $pdf_file) {
+            if (!wp_delete_file_from_directory($pdf_file, $pdf_directory)) {
+                wp_send_json_error('Failed to delete PDF files.');
+                return;
+            }
+        }
+
+        wp_send_json_success('All PDF files deleted successfully.');
+    } else {
+        wp_send_json_error('Invalid request.');
+    }
+}
+
+
+

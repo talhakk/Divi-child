@@ -1,0 +1,205 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Martel+Sans:wght@200;300;400;600;700;800;900&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+div,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+a,
+ul,
+ol,
+li {
+    padding: 0;
+    margin: 0;
+    text-decoration: none;
+    list-style-type: none;
+}
+
+:root {
+    --fill-royal-blue: rgb(58, 70, 209);
+    --fill-primary-blue:#0707a9;
+    --fill-primary-balck: rgb(17, 24, 39);
+    --fill-primary-grey: rgb(225, 222, 222);
+    --fill-primary-white: rgb(255, 255, 255);
+}
+
+.form .default-btn ,.form .wpcf7-submit {
+    background-color: var(--fill-royal-blue);
+    border-radius: 4.34px;
+    font-family: "Ubuntu";
+    font-weight: 700;
+    font-size: 17.35px;
+    line-height: 1.1;
+    text-align: center;
+    color: var(--fill-primary-white);
+    border: 2px solid transparent;
+    padding: 18.22px 52.92px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* get quote section */
+.quote-wrapper {
+    padding: 40px 0px 27px;
+}
+
+.quote-wrapper .container {
+    padding: 0px 20px;
+}
+
+.quote-wrapper .content-inner {
+    max-width: 1041px;
+    width: 100%;
+    margin: 0px auto;
+    padding-bottom:100px;
+}
+
+.quote-wrapper .form {
+    padding-top: 41px;
+}
+
+.quote-wrapper .content-inner h6 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--fill-royal-blue);
+    text-align: center;
+    line-height: 1.5;
+    letter-spacing: 10%;
+    font-family: "Ubuntu";
+    padding-bottom: 10px;
+}
+
+.quote-wrapper .content-inner h2 {
+    text-align: center;
+    font-weight: 800;
+    font-size: 28px;
+    line-height: 1.29;
+    color: var(--fill-royal-blue);
+    padding-bottom: 7px;
+    font-family: "Martel Sans";
+}
+
+.quote-wrapper .content-inner p {
+    text-align: center;
+    color: var(--fill-primary-balck);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.6;
+    font-family: "Ubuntu";
+}
+
+.form .field-wrapper {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+.form .field-wrapper p {
+    width: 100%;
+}
+.form .field-inner {
+    max-width: 100%;
+    width: 100%;
+}
+
+.form input ,.form textarea {
+    width: 100%;
+    border-radius: 4.34px;
+    border: 0.87px solid var(--fill-primary-grey);
+    padding: 18px 28px 20px;
+    margin-bottom: 10.23px;
+}
+
+.form input:focus , .form textarea:focus {
+    outline: none;
+    border: 0.87px solid var(--fill-royal-blue);
+}
+
+.form .btn-wrapper {
+    margin-top: 20px;
+}
+
+.form .btn-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+.form .pdf-btn-wrapper p {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.form .btn-wrapper p .wpcf7-spinner { 
+    display: none !important;
+}
+.form .wpcf7-submit {
+    margin-bottom: 10px;
+}
+.form .wpcf7-submit:hover {
+    color: var(--fill-royal-blue);
+    border: 2px solid var(--fill-royal-blue);
+    background-color: var(--fill-primary-white);
+}
+.form .pdf-btn-wrapper .default-btn {
+    background-color: var(--fill-primary-white);
+    color: var(--fill-royal-blue);
+    font-weight: 400;
+    padding: 0px;
+}
+.form .pdf-btn-wrapper .default-btn:hover {
+    color: var(--fill-primary-blue);
+}
+.form .pdf-btn-wrapper>button:nth-child(1) {
+    margin-right: 39px;
+}
+
+@media only screen and (min-width:576px) {
+    .form .btn-wrapper {
+        flex-direction: row;
+    }
+
+    .quote-wrapper .content-inner h2 {
+        font-size: 38px;
+    }
+
+    .form .wpcf7-submit {
+        margin-bottom: 0px;
+    }
+
+    .quote-wrapper .content-inner h6 {
+        padding-bottom: 20px;
+    }
+}
+
+@media only screen and (min-width:768px) {
+    .quote-wrapper {
+        padding: 99px 0px 27px;
+    }
+
+    .form .field-wrapper {
+        flex-direction: row;
+    }
+
+    .form .field-inner {
+        max-width: 48.703%;
+        width: 100%;
+    }
+
+    .quote-wrapper .content-inner h2 {
+        font-size: 48px;
+    }
+
+    .form input {
+        margin-bottom: 31.23px;
+    }
+}

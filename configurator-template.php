@@ -129,6 +129,29 @@ Template Name: Configurator Template two
                     </div>
                     <div class="watts"><span >0</span>/340W</div>
                 </div>
+                <div class="module-section" style="display:none;">
+                    <div class="module-wrapper" id="rear-module-images">
+                        <div class="module-structure static">
+                            <img id="redundant-power-image" src="<?php echo get_stylesheet_directory_uri().'/assets/watt1.png';?>" alt="" class="module-image">
+                            <img src="<?php echo get_stylesheet_directory_uri().'/assets/watt.png';?>" alt="" class="small-images module-image">
+                        </div>
+                        <div class="slot module-structure" data-slot="1"></div>
+                        <div class="slot module-structure" data-slot="2"></div>
+                        <div class="slot module-structure" data-slot="3"></div>
+                        <div class="slot module-structure" data-slot="4"></div>
+                        <div class="slot module-structure" data-slot="5"></div>
+                        <div class="slot module-structure" data-slot="6"></div>
+                        <div class="slot module-structure" data-slot="7"></div>
+                        <div class="slot module-structure" data-slot="8"></div>
+                        <div class="slot module-structure" data-slot="9"></div>
+                        <div class="slot module-structure" data-slot="10"></div>
+                        <div class="module-structure static">
+                            <img src="<?php echo get_stylesheet_directory_uri().'/assets/watt1.png';?>" alt="" class="module-image">
+                            <img src="<?php echo get_stylesheet_directory_uri().'/assets/watt2.png';?>" alt="" class="module-image">
+                        </div>
+                    </div>
+                    <div class="watts"><span >0</span>/340W</div>
+                </div>
 
                 <div class="settings-wrapper module-sellector">
                     <div class="setting products">
@@ -232,6 +255,9 @@ Template Name: Configurator Template two
                 </div>
             </div>
         </div>
+        <div id="configurator-loader" class="backdrop" style="display:none">
+        <div class="loader"></div>
+    </div>
     </div>
     </div>
 </body>

@@ -489,3 +489,52 @@ input.text-input::placeholder {
     background-color: var(--primary);
     border-color: var(--primary);
 }
+/* Loader Styles */
+:root {
+    --fill-royal-blue: rgb(58, 70, 209);
+    --fill-grey-white: rgb(243, 243, 243);
+    --fill-grey-white-alpha: rgb(243, 243, 243,0.9);
+}
+
+.configurator-container .loader {
+    border: 8px solid var(--fill-grey-white);
+    border-radius: 50%;
+    border-top: 8px solid var(--fill-royal-blue);
+    width: 60px;
+    height: 60px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+}
+
+.configurator-container .backdrop {
+    z-index: 9999;
+    background-color: var(--fill-grey-white-alpha);
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

@@ -278,7 +278,7 @@ $(".slot").droppable({
                     $('#cards-list').empty();
                     // Append new cards
                     $.each(response.data, function(index, card) {
-                        $('#cards-list').append('<li data-card-id="' + card.id + '">' + card.name + '</li>');
+                        $('#cards-list').append('<li data-card-id="' + card.id + '" data-card-name="'+card.name+'"><strong>' + card.name + '</strong>'+card.secondary_name+'</li>');
                     });
                     $('#cards-list li').click(function() {
                         $('#cards-list li').removeClass('active');
@@ -295,7 +295,7 @@ $(".slot").droppable({
     // Get Rear Modules list
     $(document).on('click', '#cards-list li', function() {
         var card_id = $(this).data('card-id'); // Get selected card ID    
-        var card_name = $(this).text();
+        var card_name = $(this).data('card-name');
         var data = {
             'action': 'get_rear_modules',
             'card_id': card_id
@@ -443,11 +443,6 @@ function getFormData() {
     }
     formData.frameSupportBracketKit = $('#frame-support-bracket-kit-options input[name="option"]:checked').val();
 
-    formData.card = $('#cards-list option:selected').text();
-    formData.rearModules = $('#rear-modules-list option:selected').map(function() {
-        return $(this).text();
-    }).get();
-
     // Collect images data
     var imagesData = [];
     $('.slot').each(function() {
@@ -495,6 +490,7 @@ function getFormData() {
  * 
  */
 $('#generate-pdf-button').click(function() {
+    $('#configurator-loader').show();
      // Check if .slot elements exist
      if ($('.slot').find('img').length === 0) {
         // Alert the user
@@ -508,10 +504,8 @@ var pdfData = getFormData();
         pdfData: pdfData
     };
 
-    $.post(ajaxurl, data, function(response) {
-        // Handle response
-        console.log('success generating pdf');
-    
+    $.post(ajaxurl, data, function(response) { 
+        $('#configurator-loader').hide();
         // Check if the response indicates success
         if (response.success) {
         var pdfUrl = response.data.pdf_url;
@@ -539,6 +533,7 @@ var pdfData = getFormData();
  * 
  */
 $('#request-for-quotation-button').click(function() {
+    $('#configurator-loader').show();
     // Check if some Rear Module Selected otherwise
     if ($('.slot').find('img').length === 0) {
         // Alert the user
@@ -553,17 +548,15 @@ $('#request-for-quotation-button').click(function() {
         };
     
         $.post(ajaxurl, data, function(response) {
+            $('#configurator-loader').hide();
             // Handle response
             console.log('Request for Quotation initiated');
         
             // Check if the response indicates success
             if (response.success) {
-           // var pdfUrl = response.data;
-
-            // Save pdfUrl in the browser's local storage
-            //localStorage.setItem('pdfUrl', pdfUrl);
-            var pdf_filename= response.data.pdf_filename;
-             window.location.href = '/jilchad/configuration-sales/?pdf_filename=' + pdf_filename;
+    
+             // Redirect user to another page
+             window.location.href = '/jilchad/configuration-sales/';
             } else {
                 // Handle error response
                 console.log('Failed to Request for Quotation:', response.data);
