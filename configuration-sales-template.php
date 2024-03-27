@@ -7,15 +7,11 @@ Template Name: Configuration Sales
 session_start();
 
 // Retrieve $_SESSION['configuration_pdf_url'] and assign it to a PHP variable
-$pdf_url = isset($_SESSION['configuration_pdf_url']) ? $_SESSION['configuration_pdf_url'] : '';
+$pdf_urls = isset($_SESSION['configuration_pdf_urls']) ? $_SESSION['configuration_pdf_urls'] : '';
+$pdf_filenames = isset($_SESSION['configuration_pdf_time_filenames']) ? $_SESSION['configuration_pdf_time_filenames'] : '';
 
 get_header();
 
-// PDF Buttons
-if (!empty($pdf_url)) {
-    echo '<a href="' . $pdf_url . '" target="_blank">View PDF</a>';
-    echo '<a href="' . $pdf_url . '" download>Download PDF</a>';
-}
 ?>
 <section class="quote-wrapper">
         <div class="container">
@@ -34,31 +30,62 @@ if (!empty($pdf_url)) {
 
             </div>
         </div>
-    </section>
-                  
+ </section>  
                        
-                       
+    <table id="request_quotation_pdf_urls_table">
+    <thead>
+        <tr>
+            <th>PDF Timestamp</th>
+            <th>View</th>
+            <th>Download</th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php
+            // Reverse the display order of $pdf_urls
+            $pdf_urls = array_reverse($pdf_urls);
+
+            // Loop through the reversed array
+            foreach ($pdf_urls as $pdf_url):
+                // Extract filename from the URL
+                $filename = basename($pdf_url);
+                // Extract timestamp from filename
+                $timestamp = substr($filename, 0, strpos($filename, '_'));
+                // Append time part (00:00:00) to the timestamp
+                $timestamp_with_time = $timestamp . '_000000';
+                // Convert timestamp to date
+                $date = DateTime::createFromFormat('Ymd_His', $timestamp_with_time);
+                // Check if date creation was successful
+                if ($date !== false) {
+                    // Format the date to display only date without time
+                    $formatted_date = $date->format('Y-m-d');
+                } else {
+                    $formatted_date = 'Invalid Date';
+                }
+            ?>
+            <tr>
+                <td><?php echo $formatted_date; ?></td>
+                <td><a href="<?php echo $pdf_url; ?>" target="_blank">View</a></td>
+                <td><a href="<?php echo $pdf_url; ?>" download>Download</a></td>
+            </tr>
+            <?php endforeach; ?>
+    </tbody>
+</table>
+                     
 <script>
+ 
  document.addEventListener("DOMContentLoaded", function() {
-    // Retrieve the value of pdf_url from the PHP variable
-    var pdfUrl = <?php echo json_encode($pdf_url); ?>;
-    console.log('PDF URL Is: ' + pdfUrl);
+    // Encode the pdfUrl array as JSON
+    var pdfUrlJSON = <?php echo json_encode($pdf_filenames); ?>;
+    
+    // Get the hidden field element
+    var submittedPdfUrlsField = document.getElementById('submittedpdfurls');
+    
+    // Set the value of the hidden field to the JSON-encoded pdfUrl array
+    submittedPdfUrlsField.value = pdfUrlJSON;
 
-
-    // Select all buttons with class name 'extra_pdf_buttons'
-    var pdfbuttons = document.querySelectorAll('.extra_pdf_buttons');
-
-    // Check if pdfUrl is not empty
-    if (pdfUrl && pdfbuttons) {
-        // Loop through each button
-        pdfbuttons.forEach(function(button) {
-            // Replace the href value with pdfUrl
-            button.href = pdfUrl;
-        });
-    } else {
-        console.log('Buttons does not exist, PDF Url is: ' + pdfUrl);
-    }
 });
+
 </script>
 <?php
 get_footer();

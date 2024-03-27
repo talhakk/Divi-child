@@ -89,14 +89,13 @@ function generateCardMarkup($cardName, $power) {
                     <div class="module-wrapper" id="rear-module-images">
                         <div class="module-structure static ">
                         <?php 
-                        $redundantPowerSupply= $pdf_data['redundantsupply'];
+                        $redundantPowerSupply= $pdf_data['redundantPowerSupply'];
                         if ($redundantPowerSupply === 'yes'){
-                          echo generateImageMarkup(get_stylesheet_directory_uri().'/assets/watt1.png');
+                          echo generateImageMarkup(get_stylesheet_directory_uri().'/assets/img/config_powersupplies-redundant.png');
+                        }else{
+                          echo generateImageMarkup(get_stylesheet_directory_uri().'/assets/img/conf_powersupplies-noredundant.png');
                         }
-                         ?>
-                         <span class="small-images">
-                        <?php echo generateImageMarkup(get_stylesheet_directory_uri().'/assets/watt.png'); ?>
-                        </span>
+                         ?>    
                         </div>
                         <div class="slot module-structure" data-slot="1"><?php echo generateImageMarkup($pdf_data['imageSrc_0'], $pdf_data['imageClasses_0']); ?></div>
                         <div class="slot module-structure" data-slot="2"><?php echo generateImageMarkup($pdf_data['imageSrc_1'], $pdf_data['imageClasses_1']); ?></div>
@@ -109,8 +108,7 @@ function generateCardMarkup($cardName, $power) {
                         <div class="slot module-structure" data-slot="9"><?php echo generateImageMarkup($pdf_data['imageSrc_8'], $pdf_data['imageClasses_8']); ?></div>
                         <div class="slot module-structure" data-slot="10"><?php echo generateImageMarkup($pdf_data['imageSrc_9'], $pdf_data['imageClasses_9']); ?></div>
                         <div class="module-structure static">
-                        <?php echo generateImageMarkup(get_stylesheet_directory_uri().'/assets/watt1.png'); ?>
-                        <?php echo generateImageMarkup(get_stylesheet_directory_uri().'/assets/watt2.png'); ?>                     
+                        <?php echo generateImageMarkup(get_stylesheet_directory_uri().'/assets/img/config_powersupplies-main.png'); ?>                                    
                   </div>
               </div>
           </div>

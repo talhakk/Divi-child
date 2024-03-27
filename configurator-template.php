@@ -9,12 +9,11 @@ Template Name: Configurator Template two
         'hide_empty' => false, 
         'parent' => 0, // Fetches only top-level terms with no parent
     ));
-    // Retrieve the repeater field data that i have created
-    $frames = get_field('select_frame'); 
-    // get the droppable last image 
-    $lastimage = get_field('last_image', $page_id);
+    // Get Configurator Select Frame Repeater from Options Page
+    $frames = get_field('select_frame', 'option');     
+    // Snmp checkbox value ACF
+    $snmpValue = get_field('snmp_support_text', 'option'); 
 ?>
-
 <body>
     <div class="configurator-container">
         <div class="frame-wrapper">
@@ -27,32 +26,38 @@ Template Name: Configurator Template two
                 </div>
 
                 <div class="settings-wrapper">
-                    <div class="setting select-frame">
+                <div class="setting select-frame">
                         <h2 class="heading">Select Frame</h2>
-                                    <?php
-                                    if( $frames ) {
-                                        echo '<form id="frame-selection-radio" class="content">'; // Start a form element
-                                        $first_iteration = true; // Flag to track the first iteration
-                                        foreach( $frames as $frame ) {
-                                            $power = $frame['select_frame_power']; // Retrieve the value of the text field
-                                         ?>
-                                         <div class="check-wrapper">
-                                            <div class="radio-wrapper">
-                                         <?php
-                                            // Display radio option
-                                            echo '<input type="radio" class="radio" id="' . $power . '" name="select_frame_power" value="' . $power . '"checked>';
-                                            echo '<label for="' . $power . '"><strong>' . $power . '</strong>- 2RU high-density,
-                                            20-slot openGear® compatible frame.</label>';
-                                            ?>
-                                            </div>
-                                        </div>
+                        <?php
+                        if ($frames) {
+                            echo '<form id="frame-selection-radio" class="content">'; // Start a form element
+                            $first_iteration = true; // Flag to track the first iteration
+                            foreach ($frames as $frame) {
+                                // Retrieve the values of ACF fields
+                                $frameName = $frame['select_frame_name'];
+                                $power = $frame['frame_power'];
+                                $secondaryName = $frame['secondary_name'];
+                                $framePower = $frameName . ' (' . $power.')';
+                        ?>
+                                <div class="check-wrapper">
+                                    <div class="radio-wrapper">
                                         <?php
-                                        }
-                                        echo '</form>'; // Close the form element
-                                    }
-                            ?> 
-                       
+                                        // Display radio option
+                                        // Check if it's the first iteration and add checked attribute accordingly
+                                        $checked = $first_iteration ? 'checked' : '';
+                                        echo '<input type="radio" class="radio" id="' . $framePower . '" name="select_frame_name" value="' . $framePower . '" ' . $checked . '>';
+                                        echo '<label for="' . $framePower . '"><strong>' . $framePower . '</strong>-' . $secondaryName . '</label>';
+                                        ?>
+                                    </div>
+                                </div>
+                        <?php
+                                $first_iteration = false; // Set to false after the first iteration
+                            }
+                            echo '</form>'; // Close the form element
+                        }
+                        ?>
                     </div>
+
                     <div class="setting power-supply">
                         <h2 class="heading">Redundant Power Supply</h2>
                         <div class="content">
@@ -82,7 +87,7 @@ Template Name: Configurator Template two
                                 </div>
                                 <!-- Checkbox for 'HPF-9000' selection -->
                                 <div id="network-card-checkbox-container" >
-                                    <input type="checkbox" id="additional-info-checkbox">
+                                    <input type="checkbox" id="additional-info-checkbox" data-value="<?php echo $snmpValue; ?>">
                                     <label for="additional-info-checkbox">SNMP Support:</label><br>
                                     <input type="text" id="snmp-support-ip" class="text-input" name="snmp-support-checkbox" placeholder="IP Address" >
                                 </div>
@@ -109,8 +114,8 @@ Template Name: Configurator Template two
                 <div class="module-section">
                     <div class="module-wrapper" id="rear-module-images">
                         <div class="module-structure static">
-                            <img id="redundant-power-image" src="<?php echo get_stylesheet_directory_uri().'/assets/watt1.png';?>" alt="" class="module-image">
-                            <img src="<?php echo get_stylesheet_directory_uri().'/assets/watt.png';?>" alt="" class="small-images module-image">
+                            <img id="redundant-power-yes" src="<?php echo get_stylesheet_directory_uri().'/assets/img/config_powersupplies-redundant.png';?>" alt="" >
+                            <img id="redundant-power-no" style="display:none;" src="<?php echo get_stylesheet_directory_uri().'/assets/img/conf_powersupplies-noredundant.png';?>" alt="" >
                         </div>
                         <div class="slot module-structure" data-slot="1"></div>
                         <div class="slot module-structure" data-slot="2"></div>
@@ -123,8 +128,7 @@ Template Name: Configurator Template two
                         <div class="slot module-structure" data-slot="9"></div>
                         <div class="slot module-structure" data-slot="10"></div>
                         <div class="module-structure static">
-                            <img src="<?php echo get_stylesheet_directory_uri().'/assets/watt1.png';?>" alt="" class="module-image">
-                            <img src="<?php echo get_stylesheet_directory_uri().'/assets/watt2.png';?>" alt="" class="module-image">
+                            <img src="<?php echo get_stylesheet_directory_uri().'/assets/img/config_powersupplies-main.png';?>" alt="">
                         </div>
                     </div>
                     <div class="watts"><span >0</span>/340W</div>
@@ -204,7 +208,7 @@ Template Name: Configurator Template two
                         <div class="content">
                         <div id="rear-module-image"></div>
                             <div class="divider"></div>
-                            <div class="features-availabilty">
+                             <div class="features-availabilty">
                                 <div>
                                     <h3>Features</h3>
                                     <ul>
@@ -246,7 +250,7 @@ Template Name: Configurator Template two
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>  
                 </div>
 
                 <div class="action-btns">          
@@ -261,6 +265,5 @@ Template Name: Configurator Template two
     </div>
     </div>
 </body>
-
 </html>
 <?php get_footer(); ?>

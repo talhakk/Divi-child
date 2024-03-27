@@ -209,9 +209,11 @@ $(".slot").droppable({
     $('#redundant-power-supply-options input[name="option"]').change(function() {
         var selectedValue = $(this).val();
         if (selectedValue === 'no') {
-            $('#redundant-power-image').hide(); // Hide the image if 'no' is selected
+            $('#redundant-power-yes').hide(); // Hide the image if 'no' is selected
+            $('#redundant-power-no').show();
         } else {
-            $('#redundant-power-image').show(); // Show the image if 'yes' is selected
+            $('#redundant-power-yes').show(); // Show the image if 'yes' is selected
+            $('#redundant-power-no').hide();
         }
     });
 /**
@@ -353,11 +355,10 @@ $(".slot").droppable({
                 $('#droppable-container').empty();
                 if (response.success) {
                     var power= response.data.power_watt;
-                    var fourSlotImage = response.data.four_slot_image;
+                    var rearIoWidth=parseInt(response.data.rear_io_width);
                     var selectedOptions= response.data.selected_options;
-                    
                     var imageClass = 'module-img';
-                    if (fourSlotImage.length > 0) { // Check if the checkbox is checked
+                    if (rearIoWidth===4) { 
                         imageClass += ' expanded';
                     }
            
@@ -422,6 +423,19 @@ $(".slot").droppable({
             });
         }
 });//end of rear module images 
+
+// Function to reset slots
+function resetSlots() {
+    // Remove all images from slots
+    $(".slot").each(function() {
+        $(this).empty();
+        $(this).removeAttr('data-expanded');
+        // Enable droppable functionality for each slot
+        $(this).droppable('enable');
+    });
+   
+    
+}
 /**
  * 
  * Collect Data for PDF & Quotation
@@ -432,14 +446,21 @@ function getFormData() {
 
     // Basic options data 
     formData.title = $('#frame_title_main').val();
-    formData.selectedFrame = $('#frame-selection-radio input[name="select_frame_power"]:checked').val();
+    formData.selectedFrame = $('#frame-selection-radio input[name="select_frame_name"]:checked').val();
     formData.redundantPowerSupply = $('#redundant-power-supply-options input[name="option"]:checked').val();
     formData.networkCard = $('#network-card-options input[name="second_option"]:checked').val();
     formData.snmpSupport = '';
     formData.snmpSupportCheck = '';
     if ($('#network-card-checkbox-container').is(':visible')) {
         formData.snmpSupport = $('#snmp-support-ip').val();
-        formData.snmpSupportCheck = $('#network-card-options #additional-info-checkbox').prop('checked');
+        snmpCheckbox = $('#network-card-options #additional-info-checkbox').prop('checked');
+        // Check if formData.snmpSupportCheck is checked
+            if (snmpCheckbox=== true) {
+                // Set the value of formData.snmpSupport to 'HPF'
+                formData.snmpSupportCheck = $('#network-card-options #additional-info-checkbox').data('value');
+            }else{
+                formData.snmpSupportCheck='none';
+            }
     }
     formData.frameSupportBracketKit = $('#frame-support-bracket-kit-options input[name="option"]:checked').val();
 
@@ -490,13 +511,14 @@ function getFormData() {
  * 
  */
 $('#generate-pdf-button').click(function() {
-    $('#configurator-loader').show();
+  
      // Check if .slot elements exist
      if ($('.slot').find('img').length === 0) {
         // Alert the user
         alert('Select atleast one Rear Module');
         return; // Exit the function
     }
+$('#configurator-loader').show();
 var pdfData = getFormData();
     // Prepare data object for AJAX request
     var data = {
@@ -516,11 +538,16 @@ var pdfData = getFormData();
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+      
+        alert("Your frame PDF is Downloaded to your PC, You can make another frame now");
+        resetSlots()
         } else {
+            $('#configurator-loader').hide();
             // Handle error response
             console.log('Failed to generate PDF:', response.data);
         }
     }).fail(function(xhr, status, error) {
+        $('#configurator-loader').hide();
         // Handle AJAX request failure
         console.log('Failed to generate PDF:', error);
     });
@@ -533,13 +560,14 @@ var pdfData = getFormData();
  * 
  */
 $('#request-for-quotation-button').click(function() {
-    $('#configurator-loader').show();
+    
     // Check if some Rear Module Selected otherwise
     if ($('.slot').find('img').length === 0) {
         // Alert the user
         alert('Select atleast one Rear Module');
         return; // Exit the function
     }
+    $('#configurator-loader').show();
     var pdfData = getFormData();
         // Prepare data object for AJAX request
         var data = {
@@ -554,14 +582,28 @@ $('#request-for-quotation-button').click(function() {
         
             // Check if the response indicates success
             if (response.success) {
-    
-             // Redirect user to another page
-             window.location.href = '/jilchad/configuration-sales/';
+            /**ask if user wants to make additional frame */
+            
+            var result = confirm("Your frame submission is saved, Click 'OK' if you want to make more frames before quotation. Click 'Cancel' if you want to proceed with Request for Quotation");
+
+            // Check the result
+            if (result) {
+                // User clicked "OK" (equivalent to "Yes")
+                // clear slots
+                resetSlots()
             } else {
+                // User clicked "Cancel" (equivalent to "No")
+                // Redirect user to another page
+                window.location.href = '/jilchad/configuration-sales/';
+            }  
+             
+            } else {
+                $('#configurator-loader').hide();
                 // Handle error response
                 console.log('Failed to Request for Quotation:', response.data);
             }
         }).fail(function(xhr, status, error) {
+            $('#configurator-loader').hide();
             // Handle AJAX request failure
             console.log('Failed to Request for Quotation:', error);
         });
@@ -570,3 +612,5 @@ $('#request-for-quotation-button').click(function() {
     });
 
 });//main
+
+

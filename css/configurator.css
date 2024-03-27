@@ -251,7 +251,7 @@ input.text-input::placeholder {
 }
 
 .module-wrapper .module-structure.static {
-    padding: 15px 20px;
+    /* padding: 15px 20px; */
     background-color: #E9EBFA;
 }
 
@@ -267,7 +267,7 @@ input.text-input::placeholder {
 
 .module-wrapper .module-structure img {
     width: 100%;
-    object-fit: contain;
+    /* object-fit: contain; */
     position: absolute;
     height: 100%;
     top: 0;
@@ -277,7 +277,7 @@ input.text-input::placeholder {
 
 .module-wrapper .module-structure.static img {
     position: unset;
-    height: auto;
+    /* height: auto; */
 }
 
 .module-wrapper .module-structure:hover ,.module-wrapper .module-structure.ui-droppable-hover {

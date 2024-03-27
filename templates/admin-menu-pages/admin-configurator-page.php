@@ -94,3 +94,33 @@
         });
     </script>
 </div>
+<script>
+jQuery(document).ready(function ($) {
+    // Function to get URL parameter by name
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        var results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+
+    // Get the value of pdf_urls parameter from the URL
+    var pdfUrlsParam = getUrlParameter('pdf_urls');
+
+    // Convert the comma-separated string to an array
+    var pdfUrlsArray = pdfUrlsParam.split(',');
+
+    // Loop through table rows and highlight those matching filenames
+    $('tbody tr').each(function () {
+        var filename = $(this).find('td:first-child').text().trim(); // Get filename from the first cell of each row
+        if (pdfUrlsArray.includes(filename)) {
+            $(this).addClass('highlighted'); // Apply CSS class to highlight matching rows
+        }
+    });
+});
+
+</script>
+<style>
+.highlighted{
+    background-color:yellow!important;
+}</style>
